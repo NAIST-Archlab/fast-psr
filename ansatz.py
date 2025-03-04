@@ -164,26 +164,24 @@ def entangled_r_layer(qc: qiskit.QuantumCircuit, thetas, type, num_upsidedown = 
         k += 1
     return qc
 
-def decrease_r_layer(qc: qiskit.QuantumCircuit, thetas, type, control_index = 0) -> qiskit.QuantumCircuit:
+def decrease_r_layer(qc: qiskit.QuantumCircuit, thetas, type, controls, targets) -> qiskit.QuantumCircuit:
     n = qc.num_qubits
     k = 0
-    controlled_indexs = (list(range(n - 1, -1, -1)))
-    controlled_indexs.remove(control_index) 
-    for i in range(0, n - 1):
+    for i, control in enumerate(controls):
         if type == 'rx':
-            qc.crx(thetas[k], control_index, controlled_indexs[i])
+            qc.crx(thetas[k], control, targets[i])
         if type == 'ry':
-            qc.cry(thetas[k], control_index, controlled_indexs[i])
+            qc.cry(thetas[k], control, targets[i])
         if type == 'rz':
-            qc.crz(thetas[k], control_index, controlled_indexs[i])
+            qc.crz(thetas[k], control, targets[i])
         k += 1
     return qc
 
-def entangled_cnot_layer(qc: qiskit.QuantumCircuit) -> qiskit.QuantumCircuit:
+def entangled_cx_layer(qc: qiskit.QuantumCircuit) -> qiskit.QuantumCircuit:
     n = qc.num_qubits
     k = 0
     for i in range(0, n - 1):
-        qc.cnot(n - i - 1, n - 2 - i)
+        qc.cx(n - i - 1, n - 2 - i)
         k += 1
     return qc
 
@@ -211,7 +209,7 @@ def quanvolutional2(qc):
     n = qc.num_qubits
     thetas = np.random.uniform(low=0, high=2*np.pi, size=(2*n,))
     qc = xz_layer(qc, thetas)
-    qc = entangled_cnot_layer(qc)
+    qc = entangled_cx_layer(qc)
     return qc
 
 def quanvolutional3(qc):
@@ -231,23 +229,39 @@ def quanvolutional4(qc):
 def quanvolutional5(qc):
     n = qc.num_qubits
     thetas = np.random.uniform(low=0, high=2*np.pi, size=(n*n + 3*n,))
-    qc = xz_layer(qc, thetas[:2*n])   
-    qc = decrease_r_layer(qc, thetas[2*n:2*n + n - 1], type = 'rz', control_index = n - 1)
-    qc = decrease_r_layer(qc, thetas[2*n + n - 1:2*n + 2*n - 2], type = 'rz', control_index = n - 2)
-    qc = decrease_r_layer(qc, thetas[2*n + 2*n - 2:2*n + 3*n - 3], type = 'rz', control_index = n - 3)
-    qc = decrease_r_layer(qc, thetas[2*n + 3*n - 3:2*n + 4*n - 4], type = 'rz', control_index = n - 4)
-    qc = xz_layer(qc, thetas[2*n + 4*n - 4:2*n + 4*n - 4 + 2*n]) 
+    j = 0
+    qc = xz_layer(qc, thetas[:2*n])  
+    j += 2*n 
+    for i in range(n):
+        targets = list(range(0, n-1))
+        targets.reverse()
+        
+        for j in range(0, i):
+            targets[j] += 1
+
+        qc = decrease_r_layer(qc, thetas[j:j + n - 1], type = 'rz', controls = [n-1-i]*(n-1), targets = targets)
+        j += n - 1
+
+    qc = xz_layer(qc, thetas[j:j + 2*n]) 
     return qc
 
 def quanvolutional6(qc):
     n = qc.num_qubits
     thetas = np.random.uniform(low=0, high=2*np.pi, size=(n*n + 3*n,))
-    qc = xz_layer(qc, thetas[:2*n])   
-    qc = decrease_r_layer(qc, thetas[2*n:2*n + n - 1], type = 'rx', control_index = n - 1)
-    qc = decrease_r_layer(qc, thetas[2*n + n - 1:2*n + 2*n - 2], type = 'rx', control_index = n - 2)
-    qc = decrease_r_layer(qc, thetas[2*n + 2*n - 2:2*n + 3*n - 3], type = 'rx', control_index = n - 3)
-    qc = decrease_r_layer(qc, thetas[2*n + 3*n - 3:2*n + 4*n - 4], type = 'rx', control_index = n - 4)
-    qc = xz_layer(qc, thetas[2*n + 4*n - 4:2*n + 4*n - 4 + 2*n]) 
+    j = 0
+    qc = xz_layer(qc, thetas[:2*n])  
+    j += 2*n 
+    for i in range(n):
+        targets = list(range(0, n-1))
+        targets.reverse()
+        
+        for j in range(0, i):
+            targets[j] += 1
+
+        qc = decrease_r_layer(qc, thetas[j:j + n - 1], type = 'rx', controls = [n-1-i]*(n-1), targets = targets)
+        j += n - 1
+
+    qc = xz_layer(qc, thetas[j:j + 2*n]) 
     return qc
 
 def quanvolutional7(qc):
@@ -323,7 +337,7 @@ def quanvolutional11(qc):
         qc.rz(thetas[k], i)
         k += 1
     for i in range(0, n - 1, 2):
-        qc.cnot(i + 1, i)
+        qc.cx(i + 1, i)
     for i in range(1, n - 1):
         qc.ry(thetas[k], i)
         k += 1
@@ -332,7 +346,7 @@ def quanvolutional11(qc):
         k += 1
     
     for i in range(1, n - 2, 2):
-        qc.cnot(i + 1, i)
+        qc.cx(i + 1, i)
     return qc
 
 def quanvolutional12(qc):
