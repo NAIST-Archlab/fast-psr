@@ -374,7 +374,7 @@ def quanvolutional12(qc):
 
 def quanvolutional13(qc):
     n = qc.num_qubits
-    thetas = np.random.uniform(low=0, high=2*np.pi, size=(3*n + n // math.gcd(n, 3),))
+    thetas = np.random.uniform(low=0, high=2*np.pi, size=(100*n,))
     k = 0
     for i in range(0, n):
         qc.ry(thetas[k], i)
@@ -400,7 +400,7 @@ def quanvolutional13(qc):
 
 def quanvolutional14(qc):
     n = qc.num_qubits
-    thetas = np.random.uniform(low=0, high=2*np.pi, size=(3*n + n // math.gcd(n, 3),))
+    thetas = np.random.uniform(low=0, high=2*np.pi, size=(100*n,))
     k = 0
     for i in range(0, n):
         qc.ry(thetas[k], i)
