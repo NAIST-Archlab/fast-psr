@@ -33,5 +33,6 @@ constant_gate = {
         [[np.exp(-1j * theta / 2), 0], [0, np.exp(1j * theta / 2)]], dtype=np.complex128
     ),
     "H": np.array([[1, 1], [1, -1]], dtype=np.complex128) / np.sqrt(2), 
-    "CX": np.array([[1, 0,0,0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]], dtype=np.complex128)
+    "CX": np.array([[1, 0,0,0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]], dtype=np.complex128),
+    "S": np.array([[1, 0], [0, 1j]], dtype=np.complex128),
 }
