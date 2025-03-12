@@ -17,12 +17,13 @@ hex_bit_width = int(data_width/4)
 
 # Get the quantum circuit results
 utils.create_folder('./result')
-utils.create_folder('./result/mse_values')
-utils.create_folder('./result/fidelity_values')
+utils.create_folder('./result/quanv')
+utils.create_folder('./result/quanv/mse_values')
+utils.create_folder('./result/quanv/fidelity_values')
 for qubit_num_idx in qubit_num_idx_range:
     saved_folder_qiskit = '../hardware/gate_ctx_for_sim/quantum_circuit_data_' + str(qubit_num_idx) + '_qubits/'    
     # saved_folder_qiskit = '../software_sim/result/quantum_circuit_data_' + str(qubit_num_idx) + '_qubits/'  
-    saved_folder_hardware_simulator = '../../QEA_SOC_dma/c_code/results/quantum_circuit_data_' + str(qubit_num_idx) + '_qubits/'
+    saved_folder_hardware_simulator = '../QEA_SOC_dma/c_code/results/quantum_circuit_data_' + str(qubit_num_idx) + '_qubits/'
 
     state_size = 2**qubit_num_idx
 
@@ -100,5 +101,5 @@ for qubit_num_idx in qubit_num_idx_range:
         fidelity_values.append(fidelity)
         print("=============================================================================================================")
     
-    np.savetxt('./result/mse_values/' + str(qubit_num_idx) + '_qubits.txt', mse_values)
-    np.savetxt('./result/fidelity_values/' + str(qubit_num_idx) + '_qubits.txt', fidelity_values)
+    np.savetxt('./result/quanv/mse_values/' + str(qubit_num_idx) + '_qubits.txt', mse_values)
+    np.savetxt('./result/quanv/fidelity_values/' + str(qubit_num_idx) + '_qubits.txt', fidelity_values)
