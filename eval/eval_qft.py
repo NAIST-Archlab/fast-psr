@@ -16,28 +16,29 @@ hex_bit_width = int(data_width/4)
 utils.create_folder('./result/QFT/')
 utils.create_folder('./result/QFT/mse_values')
 utils.create_folder('./result/QFT/fidelity_values')
+mse_values = []
+fidelity_values = []
+
 for qubit_num_idx in qubit_num_idx_range:
     saved_folder_qiskit = '../hardware/gate_ctx_for_sim/QFT/quantum_circuit_data_' + str(qubit_num_idx) + '_qubits/'    
     # saved_folder_qiskit = '../software_sim/result/quantum_circuit_data_' + str(qubit_num_idx) + '_qubits/'  
-    saved_folder_hardware_simulator = '../QEA_SOC_dma/c_code/results/quantum_circuit_data_' + str(qubit_num_idx) + '_qubits/'
+    saved_folder_hardware_simulator = '../QEA_SOC_dma/c_code/results/QFT/'
 
     state_size = 2**qubit_num_idx
 
     # utils.create_folder('./result/mse_values/' + str(qubit_num_idx) + '_qubits')
     # utils.create_folder('./result/fidelity_values/' + str(qubit_num_idx) + '_qubits')
 
-    mse_values = []
-    fidelity_values = []
-    print("==========================> PROCESSING QUANTUM CIRCUIT WITH", qubit_num_idx, "QUBITS <==========================")
+    print("==========================> PROCESSING QFT QUANTUM CIRCUIT WITH", qubit_num_idx, "QUBITS <==========================")
     # Load the state file from Qiskit
-    state_file_path_qiskit = saved_folder_qiskit + 'output_state_' + str(qubit_num_idx) + '_qubits' + '_quanvolutional_' + str(quantum_circuit_idx) + '.txt'
-    # state_file_path_qiskit = saved_folder_qiskit + 'output_original_state_' + str(qubit_num_idx) + '_qubits' + '_quanvolutional_' + str(quantum_circuit_idx) + '.txt'
-    # state_file_path_qiskit = saved_folder_qiskit + 'output_' + str(qubit_num_idx) + '_qubits' + '_quanvolutional_' + str(quantum_circuit_idx) + '.txt'
+    state_file_path_qiskit = saved_folder_qiskit + 'output_state_QFT_' + str(qubit_num_idx) + '_qubits.txt'
+    # state_file_path_qiskit = saved_folder_qiskit + 'output_original_state_' + str(qubit_num_idx) + '_qubits.txt'
+    # state_file_path_qiskit = saved_folder_qiskit + 'output_' + str(qubit_num_idx) + '_qubits.txt'
     state_qiskit = np.loadtxt(state_file_path_qiskit, dtype=complex)
     # print(f"=>>>>Loading {state_file_path_qiskit}")
 
     # Load the state file from the hardware simulator  result_3_qubits_quanvolutional_1.txt
-    state_file_path_hardware_simulator = saved_folder_hardware_simulator + 'result_' + str(qubit_num_idx) + '_qubits' + '_quanvolutional_' + str(quantum_circuit_idx) + '.txt'
+    state_file_path_hardware_simulator = saved_folder_hardware_simulator + 'result_QFT_' + str(qubit_num_idx) + '_qubits.txt'
     raw_state_hardware_simulator = np.loadtxt(state_file_path_hardware_simulator, dtype=str)
     # print(f"=>>>>Loading {state_file_path_hardware_simulator}")
 
@@ -96,5 +97,5 @@ for qubit_num_idx in qubit_num_idx_range:
     fidelity_values.append(fidelity)
     print("=============================================================================================================")
 
-np.savetxt('./result/mse_values/' + str(qubit_num_idx) + '_qubits.txt', mse_values)
-np.savetxt('./result/fidelity_values/' + str(qubit_num_idx) + '_qubits.txt', fidelity_values)
+np.savetxt('./result/QFT/mse_values/' + 'res_mse.txt', mse_values)
+np.savetxt('./result/QFT/fidelity_values/' + 'res_fidelity.txt', fidelity_values)

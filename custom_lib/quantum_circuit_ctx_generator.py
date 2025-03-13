@@ -1,4 +1,5 @@
 import qiskit
+from qiskit import QuantumCircuit
 import ansatz
 import numpy as np
 from qimax import converter, constant
@@ -173,45 +174,38 @@ def generate_quantum_circuit_data_with_state_res(num_qubits=3, quanvolutional_id
     np.savetxt(output_state_path, res_state_1)
 
 
-def qft_Qiskit(num_qubits):
-    """QFT on the first n qubits in circuit"""
-    def qft_rotations_Qiskit(qc: qiskit.QuantumCircuit, num_qubits):
-        """Performs qft on the first n qubits in circuit (without swaps)"""
-        if num_qubits == 0:
-            return qc
-        num_qubits -= 1
-        qc.h(num_qubits)
-        for j in range(num_qubits):
-            
-            # qc.rz(np.pi/2**(num_qubits-j) / 2, num_qubits)
-            # qc.cx(j, num_qubits)
-            # qc.rz(-np.pi/2**(num_qubits-j) / 2, num_qubits)
-            # qc.cx(j, num_qubits)
-            # qc.rz(+np.pi/2**(num_qubits-j) / 2, num_qubits)
-            
-            qc.cp(np.pi/2**(num_qubits-j), j, num_qubits)
-            # qc.barrier()
-        qft_rotations_Qiskit(qc, num_qubits)
-    def swap_registers_Qiskit(qc: qiskit.QuantumCircuit, num_qubits):
-        for j in range(num_qubits//2):
-            qc.cx(j, num_qubits-j-1)
-            qc.cx(num_qubits-j-1, j)
-            qc.cx(j, num_qubits-j-1)
-            # qc.barrier()
-        return qc
-    qc = qiskit.QuantumCircuit(num_qubits)
-    qft_rotations_Qiskit(qc, num_qubits)
-    swap_registers_Qiskit(qc, num_qubits)
+def qft(n):
+    """Creates a QFT circuit on n qubits using only 1-qubit gates and CX."""
+    qc = QuantumCircuit(n)
+    
+    for j in range(n):
+        qc.h(j)  # Hadamard gate
+        for k in range(j+1, n):
+            angle = np.pi / (2 ** (k - j))  # Correct phase shift
+            qc.cx(k, j)
+            qc.rz(angle / 2, j)  # Phase rotation on target qubit
+            qc.cx(k, j)
+            qc.rz(-angle / 2, j)  # Undo unwanted phase shift
+    # Swap qubits at the end to match QFT output order
+    for i in range(n // 2):
+
+        qc.cx(j, n-j-1)
+        qc.cx(n-j-1, j)
+        qc.cx(j, n-j-1)
     return qc
 
 
 def generate_QFT_quantum_circuit_data_with_state_res(num_qubits=3, output_file_path='output.txt', output_original_state_path='output_original_state.txt', output_state_path='output_state.txt'):
-    qc = qft_Qiskit(num_qubits)
+    qc_trans = qft(num_qubits)
     # print(qiskit.quantum_info.Statevector.from_instruction(qc).data)
         
-    qc_trans = qiskit.transpile(qc, basis_gates=['h', 's', 'cx', 'rx', 'ry', 'rz'])
-    # qc_trans.draw(output='mpl')
+    # qc_trans = qiskit.transpile(qc, basis_gates=['h', 's', 'cx', 'rx', 'ry', 'rz'])
+    qc_trans.draw(output='mpl')
     # print(qiskit.quantum_info.Statevector.from_instruction(qc_trans).data)
+
+    
+    # print(qiskit.quantum_info.Statevector.from_instruction(qc_trans).data)
+    # qc_trans.draw("mpl")
 
     # Convert to readable files
     texts = []
@@ -246,14 +240,14 @@ def generate_QFT_quantum_circuit_data_with_state_res(num_qubits=3, output_file_p
     # if qc_trans.global_phase > np.pi:
     #     phase *= -1
 
-    # FROM ORIGINAL CIRCUITS
-    qc_qiskit_original = qiskit.quantum_info.Statevector.from_instruction(qc).data
+    # # FROM ORIGINAL CIRCUITS
+    # qc_qiskit_original = qiskit.quantum_info.Statevector.from_instruction(qc_trans).data
 
     # THIS IS THE EXPECTED OUTPUT
     qc_qiskit_processed = qiskit.quantum_info.Statevector.from_instruction(qc_trans).data
 
-    res_state_0 = np.array(qc_qiskit_original)
-    np.savetxt(output_original_state_path, res_state_0)
+    # res_state_0 = np.array(qc_qiskit_original)
+    # np.savetxt(output_original_state_path, res_state_0)
 
     res_state_1 = np.array(qc_qiskit_processed)
     np.savetxt(output_state_path, res_state_1)

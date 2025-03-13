@@ -40,7 +40,7 @@ module TB_QEA_QFT_5_qubits;
     reg [STATE_ADDR_WIDTH-1 : 0]        state_addra;
 
 	reg [GATE_CONTEXT_DATA_WIDTH-1:0] ctx_ram [2**GATE_CONTEXT_ADDR_WIDTH-1:0];
-    integer ins_num = 227;
+    integer ins_num = 203;
 
     integer i;
 
@@ -48,7 +48,7 @@ module TB_QEA_QFT_5_qubits;
     integer file_time_check;
      
     initial begin
-        file_time_check = $fopen("..\\hardware\\verilog\\generated_sim_file\\QFT\\quantum_circuit_data_5_qubits\\timestamps_qft5_qubits.txt", "w");
+        file_time_check = $fopen("..\\hardware\\verilog\\generated_sim_file\\QFT\\quantum_circuit_data_5_qubits\\timestamps_qft_5_qubits.txt", "w");
         $readmemh(CTX_LINK, ctx_ram, 0, ins_num-1);
 
         #(HALF_CYCLE_TIME*5);

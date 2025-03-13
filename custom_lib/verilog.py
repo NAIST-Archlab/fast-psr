@@ -110,7 +110,7 @@ def create_tb_qft(min_qbit_num, max_qbit_num):
             elif(row == 42):
                 tb_verilog.write('    integer ins_num = ' + str(len(hex_file)) + ';\n')
             elif(row == 50):
-                tb_verilog.write('        file_time_check = $fopen("' + '..\\\\hardware\\\\verilog\\\\generated_sim_file\\\\QFT\\\\quantum_circuit_data_' + str(qubit_num_idx) + '_qubits\\\\' + 'timestamps_qft' + str(qubit_num_idx) + '_qubits.txt", "w");\n')
+                tb_verilog.write('        file_time_check = $fopen("' + '..\\\\hardware\\\\verilog\\\\generated_sim_file\\\\QFT\\\\quantum_circuit_data_' + str(qubit_num_idx) + '_qubits\\\\' + 'timestamps_qft_' + str(qubit_num_idx) + '_qubits.txt", "w");\n')
             elif(row == 58):
                 tb_verilog.write('            i_qbit_num    <= ' + str(qubit_num_idx) + ';\n')
             else:
