@@ -16,4 +16,4 @@ for qubit_num_idx in qubit_num_idx_range:
         print('===> Processing quantum circuit with ' + str(qubit_num_idx) + ' qubits and ' + str(quantum_circuit_idx) + ' quanvolutional')
         ctx_link = '../hardware/gate_ctx_for_sim/quantum_circuit_data_' + str(qubit_num_idx) + '_qubits/' + 'output_' + str(qubit_num_idx) + '_qubits' + '_quanvolutional_' + str(quantum_circuit_idx) + '.txt'
         state_state = saved_folder + 'output_' + str(qubit_num_idx) + '_qubits' + '_quanvolutional_' + str(quantum_circuit_idx) + '.npy'
-        utils.quantum_circuit_res_sim(n_qubit=qubit_num_idx, n_quanv=quantum_circuit_idx, ctx_link=ctx_link, state_link=state_state)
+        utils.quantum_circuit_res_sim(n_qubit=qubit_num_idx, ctx_link=ctx_link, state_link=state_state)

@@ -249,7 +249,7 @@ def quantum_circuit_computation(n_qubit=3, n_quanv=1):
                     else:
                         sub_idx = 0
 
-def quantum_circuit_res_sim(n_qubit=3, n_quanv=1, ctx_link='', state_link='./result.txt', is_txt=False):
+def quantum_circuit_res_sim(n_qubit=3, ctx_link='', state_link='./result.txt', is_txt=False):
     gate_ctx_data = read_file(ctx_link)
 
     Dense_matrix = np.array([[0, 0], [0, 0]], dtype=complex)
