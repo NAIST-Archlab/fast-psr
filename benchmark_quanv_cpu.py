@@ -14,7 +14,7 @@ def quanv_cpu(num_qubits, function_name):
 
 for i in range(1, 10):
     quanv_cpu(10, 'quanvolutional1')  # Warm up the GPU
-for num_qubits in range(3, 30):
+for num_qubits in range(27, 31):
     for i in range(1, 20):
         
         function_name = f'quanvolutional{i}'
@@ -28,5 +28,5 @@ for num_qubits in range(3, 30):
         if 'results_df' not in locals():
             results_df = pd.DataFrame(columns=record.keys())
         results_df = pd.concat([results_df, pd.DataFrame([record])], ignore_index=True)
-        results_df.to_csv(f'result/quanv_cpu30.csv', index=False)
+        results_df.to_csv(f'result/quanv_cpu27_30.csv', index=False)
         print(f'num_qubits: {num_qubits}, quanvolutional{i}, time: ', np.mean(times))
