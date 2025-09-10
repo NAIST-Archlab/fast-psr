@@ -4,25 +4,25 @@ import numpy as np
 from qiskit_aer import Aer
 import ansatz
 import pandas as pd
-
+from qiskit_aer import AerSimulator
 def quanv(num_qubits, function_name):
     qc = qiskit.QuantumCircuit(num_qubits) 
     qc = getattr(ansatz, function_name)(qc)
     qc.save_statevector()
-    simulator = Aer.get_backend('aer_simulator_statevector', device = 'GPU')
+    simulator = AerSimulator(method="statevector", device="GPU")
     qc = qiskit.transpile(qc, backend = simulator)
     result = simulator.run(qc).result()
-    statevector = result.get_statevector(qc)
+    # statevector = result.get_statevector(qc)
     return
-
+q = int(input())
 for i in range(1, 10):
     quanv(10, 'quanvolutional1')  # Warm up the GPU
-for num_qubits in range(29, 31):
+for num_qubits in range(q, q+1):
     for i in range(1, 20):
         
         function_name = f'quanvolutional{i}'
         times = []
-        for t in range(0, 10):
+        for t in range(0, 100):
             start = time.time()
             quanv(num_qubits, function_name)
             end = time.time()
